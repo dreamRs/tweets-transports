@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+datas/twitter_token.rds
+datas/raw/*
+!datas/raw/README
+*.Rproj
