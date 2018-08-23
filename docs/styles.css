@@ -2,6 +2,10 @@ html {
   overflow-y: scroll;
 }
 
+h2 {
+  font-size: 14px !important;
+}
+
 .main-container {
   max-width: 95% !important;
 }

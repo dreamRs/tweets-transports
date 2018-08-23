@@ -146,7 +146,7 @@ make_chart <- function(data, line, type = "metro") {
 </span>
 
 <br>
-Nombre de tweets indiquant &laquo; traffic perturbé &raquo; ou &laquo; traffic interrompu &raquo; sur les comptes des lignes de transport d'Île-de-France.
+Nombre de tweets par semaine indiquant &laquo; traffic perturbé &raquo; ou &laquo; traffic interrompu &raquo; sur les comptes des lignes de transport d'Île-de-France.
 <br>
 
 Légende : 
@@ -154,7 +154,7 @@ Légende :
 <span class="dot-orange"></span> Perturbé
 
 
-## Visualisation par ligne {.tabset .tabset-pills .tabset-justified .nav-justified}
+## Mode de transport : {.tabset .tabset-pills .tabset-justified .nav-justified}
 
 ### <img src="www/Metro-M.svg" class="blue" alt="metro" width="25"/><img src="www/Metro-M-white.svg" class="white" alt="metro" width="25"/> Métro
 
