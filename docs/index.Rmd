@@ -1,0 +1,397 @@
+---
+title: "Traffic interrompu !"
+output:
+  html_document:
+    self_contained: false
+    css: styles.css
+---
+
+
+<script>
+d3.timeFormatDefaultLocale({
+   "dateTime":[
+      "%A, le %e %B %Y, %X"
+   ],
+   "date":[
+      "%d/%m/%Y"
+   ],
+   "time":[
+      "%H:%M:%S"
+   ],
+   "periods":[
+      "AM",
+      "PM"
+   ],
+   "days":[
+      "dimanche",
+      "lundi",
+      "mardi",
+      "mercredi",
+      "jeudi",
+      "vendredi",
+      "samedi"
+   ],
+   "shortDays":[
+      "dim.",
+      "lun.",
+      "mar.",
+      "mer.",
+      "jeu.",
+      "ven.",
+      "sam."
+   ],
+   "months":[
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+   ],
+   "shortMonths":[
+      "janv.",
+      "févr.",
+      "mars",
+      "avr.",
+      "mai",
+      "juin",
+      "juil.",
+      "août",
+      "sept.",
+      "oct.",
+      "nov.",
+      "déc."
+   ]
+});
+</script>
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+
+# PACKAGES
+library("data.table")
+library("stringr")
+library("lubridate")
+library("billboarder")
+
+
+# DATAS
+m_incidents <- readRDS("m_incidents.rds")
+# m_incidents <- m_incidents[year(date) >= 2018]
+
+
+r_incidents <- readRDS("r_incidents.rds")
+# m_incidents <- m_incidents[year(date) >= 2018]
+
+
+t_incidents <- readRDS("t_incidents.rds")
+# m_incidents <- m_incidents[year(date) >= 2018]
+
+
+
+# FUNS
+make_chart <- function(data, line, type = "metro") {
+  line_id <- switch(
+    type,
+    "metro" = sprintf("Ligne%d_RATP", line),
+    "rer" = line,
+    "transilien" = line
+  )
+  max_y <- max(data$value)
+  billboarder(
+    height = "250px",
+    data = data[screen_name == line_id, list(x = date, variable = variable, value = value)]
+  ) %>% 
+    bb_aes(x = x, y = value, group = variable) %>% 
+    bb_linechart(type = "area-step") %>% 
+    bb_data(
+      # order = "asc",
+      groups = list(c("perturbe", "interrompu")),
+      names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
+    ) %>% 
+    bb_y_axis(
+      max = max_y, 
+      tick = list(values = head(scales::pretty_breaks()(c(0, max_y)), n = -1))
+    ) %>% 
+    bb_x_axis(tick = list(fit = FALSE, format = "%b")) %>% 
+    bb_y_grid(show = TRUE) %>% 
+    bb_legend(show = FALSE) %>% 
+    bb_colors_manual(interrompu = "#FA5858", perturbe = "#F7D358") %>% 
+    bb_tooltip(
+      linked = list(name = "metro-tooltip"), 
+      format = list(
+        title = htmlwidgets::JS(
+          paste0("function(x) {", 
+                 "var format = d3.timeFormat('%d %B'); return 'Semaine du ' + format(x); }")
+        )
+      )
+    )
+}
+```
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+<span class="main-icon">
+<i class="fa fa-train" aria-hidden="true"></i>
+</span>
+
+<br>
+Nombre de tweets indiquant &laquo; traffic perturbé &raquo; ou &laquo; traffic interrompu &raquo; sur les comptes des lignes de transport d'Île-de-France.
+<br>
+
+Légende : 
+<span class="dot-red"></span> Interrompu
+<span class="dot-orange"></span> Perturbé
+
+
+## Visualisation par ligne {.tabset .tabset-pills .tabset-justified .nav-justified}
+
+### <img src="www/Metro-M.svg" class="blue" alt="metro" width="25"/><img src="www/Metro-M-white.svg" class="white" alt="metro" width="25"/> Métro
+
+
+</br>
+
+
+</br>
+
+<div class="row">
+<div class="col-sm-3">
+<img src="www/Paris_m_1_jms.svg" alt="line_1" width="25"/> **Ligne 1**
+```{r}
+make_chart(data = m_incidents, line = 1)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_2_jms.svg" alt="line_2" width="25"/> **Ligne 2**
+```{r}
+make_chart(data = m_incidents, line = 2)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_3_jms.svg" alt="line_3" width="25"/> **Ligne 3**
+```{r}
+make_chart(data = m_incidents, line = 3)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_4_jms.svg" alt="line_4" width="25"/> **Ligne 4**
+```{r}
+make_chart(data = m_incidents, line = 4)
+```
+</div>
+
+</div>
+
+
+
+
+<div class="row">
+<div class="col-sm-3">
+<img src="www/Paris_m_5_jms.svg" alt="line_5" width="25"/> **Ligne 5**
+```{r}
+make_chart(data = m_incidents, line = 5)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_6_jms.svg" alt="line_6" width="25"/> **Ligne 6**
+```{r}
+make_chart(data = m_incidents, line = 6)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_7_jms.svg" alt="line_7" width="25"/> **Ligne 7**
+```{r}
+make_chart(data = m_incidents, line = 7)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_8_jms.svg" alt="line_8" width="25"/> **Ligne 8**
+```{r}
+make_chart(data = m_incidents, line = 8)
+```
+</div>
+
+</div>
+
+
+
+
+<div class="row">
+<div class="col-sm-3">
+<img src="www/Paris_m_9_jms.svg" alt="line_9" width="25"/> **Ligne 9**
+```{r}
+make_chart(data = m_incidents, line = 9)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_10_jms.svg" alt="line_10" width="25"/> **Ligne 10**
+```{r}
+make_chart(data = m_incidents, line = 10)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_11_jms.svg" alt="line_11" width="25"/> **Ligne 11**
+```{r}
+make_chart(data = m_incidents, line = 11)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_12_jms.svg" alt="line_12" width="25"/> **Ligne 12**
+```{r}
+make_chart(data = m_incidents, line = 12)
+```
+</div>
+
+</div>
+
+
+
+
+<div class="row">
+<div class="col-sm-3">
+<img src="www/Paris_m_13_jms.svg" alt="line_13" width="25"/> **Ligne 13**
+```{r}
+make_chart(data = m_incidents, line = 13)
+```
+</div>
+
+<div class="col-sm-3">
+<img src="www/Paris_m_14_jms.svg" alt="line_14" width="25"/> **Ligne 14**
+```{r}
+make_chart(data = m_incidents, line = 14)
+```
+</div>
+
+
+</div> <!-- end row -->
+
+
+
+### <img src="www/RER.svg" class="blue" alt="RER" width="25"/><img src="www/RER-white.svg" class="white" alt="metro" width="25"/> RER
+
+<br>
+
+<div class="row">
+
+<div class="col-sm-4">
+<img src="www/Paris_RER_A_icon.svg" alt="rer_a" width="25"/> **RER A**
+```{r}
+make_chart(data = r_incidents, line = "RER_A", type = "rer")
+```
+</div>
+
+<div class="col-sm-4">
+<img src="www/Paris_RER_B_icon.svg" alt="rer_b" width="25"/> **RER B**
+```{r}
+make_chart(data = r_incidents, line = "RERB", type = "rer")
+```
+</div>
+
+<div class="col-sm-4">
+<img src="www/Paris_RER_C_icon.svg" alt="rer_c" width="25"/> **RER C**
+```{r}
+make_chart(data = r_incidents, line = "RERC_SNCF", type = "rer")
+```
+</div>
+
+
+</div>
+
+
+<div class="row">
+
+<div class="col-sm-4">
+<img src="www/Paris_RER_D_icon.svg" alt="rer_d" width="25"/> **RER D**
+```{r}
+make_chart(data = r_incidents, line = "RERD_SNCF", type = "rer")
+```
+</div>
+
+<div class="col-sm-4">
+<img src="www/Paris_RER_E_icon.svg" alt="rer_e" width="25"/> **RER E**
+```{r}
+make_chart(data = r_incidents, line = "RERE_SNCF", type = "rer")
+```
+</div>
+
+</div> <!-- end row -->
+
+
+### <img src="www/Logo_train_transilien.svg" class="blue" alt="Transilien" width="25"/><img src="www/Logo_train_transilien-white.svg" class="white" alt="Transilien" width="25"/> Transilien
+
+</br>
+
+<div class="row">
+
+<div class="col-sm-4">
+<img src="www/Logo_Paris_Transilien_ligneJ.svg" alt="LIGNEJ_SNCF" width="25"/> **Ligne J**
+```{r}
+make_chart(data = t_incidents, line = "LIGNEJ_SNCF", type = "transilien")
+```
+</div>
+
+<div class="col-sm-4">
+<img src="www/Logo_Paris_Transilien_ligneL.svg" alt="LIGNEL_sncf" width="25"/> **Ligne L**
+```{r}
+make_chart(data = t_incidents, line = "LIGNEL_sncf", type = "transilien")
+```
+</div>
+
+<div class="col-sm-4">
+<img src="www/Logo_Paris_Transilien_ligneP.svg" alt="LIGNEP_SNCF" width="25"/> **Ligne P**
+```{r}
+make_chart(data = t_incidents, line = "LIGNEP_SNCF", type = "transilien")
+```
+</div>
+
+
+</div> <!-- end row -->
+
+
+<div class="row">
+
+<div class="col-sm-4">
+<img src="www/Logo_Paris_Transilien_ligneH.svg" alt="LigneH_SNCF" width="25"/> **Ligne H**
+```{r}
+make_chart(data = t_incidents, line = "LigneH_SNCF", type = "transilien")
+```
+</div>
+
+<div class="col-sm-4">
+<img src="www/Logo_Paris_Transilien_ligneN.svg" alt="lignesNetU_SNCF" width="25"/> 
+<img src="www/Logo_Paris_Transilien_ligneU.svg" alt="lignesNetU_SNCF" width="25"/> **Lignes N et U**
+```{r}
+make_chart(data = t_incidents, line = "lignesNetU_SNCF", type = "transilien")
+```
+</div>
+
+<div class="col-sm-4">
+<img src="www/Logo_Paris_Transilien_ligneR.svg" alt="LigneR_SNCF" width="25"/> **Ligne R**
+```{r}
+make_chart(data = t_incidents, line = "LIGNER_SNCF", type = "transilien")
+```
+</div>
+
+
+</div> <!-- end row --> 
+
+

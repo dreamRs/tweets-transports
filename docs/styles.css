@@ -1,0 +1,56 @@
+html {
+  overflow-y: scroll;
+}
+
+.main-container {
+  max-width: 95% !important;
+}
+.col-sm-3 {
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+img {
+  vertical-align: -7px;
+}
+.title {
+  text-align: center;
+  font-weight: bold;
+}
+
+li.active>a>img.blue {
+  display: none;
+}
+.blue {
+  display: inline-block;
+}
+li.active>a>img.white {
+  display: inline-block;
+}
+.white {
+  display: none;
+}
+
+.dot-red {
+  height: 15px;
+  width: 15px;
+  background-color: #FA5858;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-orange {
+  height: 15px;
+  width: 15px;
+  background-color: #F7D358;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.main-icon {
+  position: absolute; 
+  top: -15px; 
+  right: 15px; 
+  color: #F2F2F2; 
+  font-size: 1100%; 
+  z-index: -1;
+}
