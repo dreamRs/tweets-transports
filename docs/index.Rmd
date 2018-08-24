@@ -108,15 +108,15 @@ make_chart <- function(data, line, type = "metro") {
     "transilien" = line
   )
   max_y <- max(data$value)
-  billboarder(
-    height = "250px",
-    data = data[screen_name == line_id, list(x = date, variable = variable, value = value)]
-  ) %>% 
-    bb_aes(x = x, y = value, group = variable) %>% 
-    bb_linechart(type = "area-step") %>% 
+  data <- copy(data)
+  data <- data[screen_name == line_id, list(x = date, variable = variable, value = value)]
+  data <- dcast(data = data, formula = x ~ variable, value.var = "value")
+  billboarder(height = "250px") %>% 
+    # bb_aes(x = x, y = value, group = variable) %>% 
+    bb_linechart(data = data[, list(x, interrompu, perturbe)], type = "area-step") %>% 
     bb_data(
-      # order = "asc",
-      groups = list(c("perturbe", "interrompu")),
+      order = NULL,
+      groups = list(as.list(c("perturbe", "interrompu"))),
       names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
     ) %>% 
     bb_y_axis(
@@ -128,14 +128,19 @@ make_chart <- function(data, line, type = "metro") {
     bb_legend(show = FALSE) %>% 
     bb_colors_manual(interrompu = "#FA5858", perturbe = "#F7D358") %>% 
     bb_tooltip(
+      order = "",
       linked = list(name = "metro-tooltip"), 
       format = list(
         title = htmlwidgets::JS(
           paste0("function(x) {", 
                  "var format = d3.timeFormat('%d %B'); return 'Semaine du ' + format(x); }")
         )
-      )
+      ),
+    position = htmlwidgets::JS(
+      "function(data, width, height, element) {return {top: -25, right: 100};}"
     )
+  ) %>% 
+  bb_add_style(".bb-tooltip-container" = "right: 10px; ", ".bb-tooltip th" = "background-color: #337ab7;")
 }
 ```
 
@@ -145,10 +150,15 @@ make_chart <- function(data, line, type = "metro") {
 <i class="fa fa-train" aria-hidden="true"></i>
 </span>
 
-<br>
+</br>
 Nombre de tweets par semaine indiquant &laquo; traffic perturbé &raquo; ou &laquo; traffic interrompu &raquo; sur les comptes des lignes de transport d'Île-de-France.
-<br>
+</br>
 
+
+Retrouvez le code sur notre&nbsp; <i class="fab fa-github" aria-hidden="true"></i> GitHub : https://github.com/dreamRs/tweets-transports
+
+
+</br>
 Légende : 
 <span class="dot-red"></span> Interrompu
 <span class="dot-orange"></span> Perturbé
