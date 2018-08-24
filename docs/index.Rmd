@@ -142,6 +142,17 @@ make_chart <- function(data, line, type = "metro") {
   ) %>% 
   bb_add_style(".bb-tooltip-container" = "right: 10px; ", ".bb-tooltip th" = "background-color: #337ab7;")
 }
+
+# nombre incidents
+n_inci <- function(data, line, incident = "perturbe", type = "metro") {
+  line_id <- switch(
+    type,
+    "metro" = sprintf("Ligne%d_RATP", line),
+    "rer" = line,
+    "transilien" = line
+  )
+  data[screen_name == line_id & variable == incident, sum(value)]
+}
 ```
 
 
@@ -177,20 +188,26 @@ Légende :
 <div class="row">
 <div class="col-sm-3">
 <img src="www/Paris_m_1_jms.svg" alt="line_1" width="25"/> **Ligne 1**
+</br>`r n_inci(m_incidents, 1, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 1, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 1)
 ```
 </div>
 
 <div class="col-sm-3">
-<img src="www/Paris_m_2_jms.svg" alt="line_2" width="25"/> **Ligne 2**
+<img src="www/Paris_m_2_jms.svg" alt="line_2" width="25"/> **Ligne 2** 
+</br>`r n_inci(m_incidents, 2, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 2, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 2)
 ```
 </div>
 
 <div class="col-sm-3">
-<img src="www/Paris_m_3_jms.svg" alt="line_3" width="25"/> **Ligne 3**
+<img src="www/Paris_m_3_jms.svg" alt="line_3" width="25"/> **Ligne 3** 
+</br>`r n_inci(m_incidents, 3, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 3, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 3)
 ```
@@ -198,6 +215,8 @@ make_chart(data = m_incidents, line = 3)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_4_jms.svg" alt="line_4" width="25"/> **Ligne 4**
+</br>`r n_inci(m_incidents, 4, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 4, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 4)
 ```
@@ -211,6 +230,8 @@ make_chart(data = m_incidents, line = 4)
 <div class="row">
 <div class="col-sm-3">
 <img src="www/Paris_m_5_jms.svg" alt="line_5" width="25"/> **Ligne 5**
+</br>`r n_inci(m_incidents, 5, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 5, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 5)
 ```
@@ -218,6 +239,8 @@ make_chart(data = m_incidents, line = 5)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_6_jms.svg" alt="line_6" width="25"/> **Ligne 6**
+</br>`r n_inci(m_incidents, 6, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 6, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 6)
 ```
@@ -225,6 +248,8 @@ make_chart(data = m_incidents, line = 6)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_7_jms.svg" alt="line_7" width="25"/> **Ligne 7**
+</br>`r n_inci(m_incidents, 7, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 7, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 7)
 ```
@@ -232,6 +257,8 @@ make_chart(data = m_incidents, line = 7)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_8_jms.svg" alt="line_8" width="25"/> **Ligne 8**
+</br>`r n_inci(m_incidents, 8, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 8, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 8)
 ```
@@ -245,6 +272,8 @@ make_chart(data = m_incidents, line = 8)
 <div class="row">
 <div class="col-sm-3">
 <img src="www/Paris_m_9_jms.svg" alt="line_9" width="25"/> **Ligne 9**
+</br>`r n_inci(m_incidents, 9, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 9, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 9)
 ```
@@ -252,6 +281,8 @@ make_chart(data = m_incidents, line = 9)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_10_jms.svg" alt="line_10" width="25"/> **Ligne 10**
+</br>`r n_inci(m_incidents, 10, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 10, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 10)
 ```
@@ -259,6 +290,8 @@ make_chart(data = m_incidents, line = 10)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_11_jms.svg" alt="line_11" width="25"/> **Ligne 11**
+</br>`r n_inci(m_incidents, 11, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 11, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 11)
 ```
@@ -266,6 +299,8 @@ make_chart(data = m_incidents, line = 11)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_12_jms.svg" alt="line_12" width="25"/> **Ligne 12**
+</br>`r n_inci(m_incidents, 12, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 12, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 12)
 ```
@@ -279,6 +314,8 @@ make_chart(data = m_incidents, line = 12)
 <div class="row">
 <div class="col-sm-3">
 <img src="www/Paris_m_13_jms.svg" alt="line_13" width="25"/> **Ligne 13**
+</br>`r n_inci(m_incidents, 13, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 13, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 13)
 ```
@@ -286,6 +323,8 @@ make_chart(data = m_incidents, line = 13)
 
 <div class="col-sm-3">
 <img src="www/Paris_m_14_jms.svg" alt="line_14" width="25"/> **Ligne 14**
+</br>`r n_inci(m_incidents, 14, "perturbe")` tweets &laquo; traffic perturbé &raquo;
+</br>`r n_inci(m_incidents, 14, "interrompu")` tweets &laquo; traffic interrompu &raquo;
 ```{r}
 make_chart(data = m_incidents, line = 14)
 ```
