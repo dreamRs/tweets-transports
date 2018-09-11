@@ -1,5 +1,5 @@
 ---
-title: "Traffic interrompu !"
+title: "Trafic interrompu !"
 output:
   html_document:
     self_contained: false
@@ -165,12 +165,18 @@ n_inci <- function(data, line, incident = "perturbe", type = "metro") {
 </span>
 
 </br>
-Nombre de tweets par semaine indiquant &laquo; traffic perturbé &raquo; ou &laquo; traffic interrompu &raquo; sur les comptes des lignes de transport d'Île-de-France (Métro, RER et Transilien), sur la période du `r format(m_incidents[, min(date)], "%d/%m/%Y")` au `r format(m_incidents[, max(date)], "%d/%m/%Y")`.
+Nombre de tweets par semaine indiquant &laquo; trafic perturbé &raquo; ou &laquo; trafic interrompu &raquo; sur les comptes des lignes de transport d'Île-de-France (Métro, RER et Transilien), sur la période du `r format(m_incidents[, min(date)], "%d/%m/%Y")` au `r format(m_incidents[, max(date)], "%d/%m/%Y")`.
 </br>
 
 
 Retrouvez le code sur notre&nbsp; <i class="fab fa-github" aria-hidden="true"></i> GitHub : https://github.com/dreamRs/tweets-transports
 
+
+A propos :
+
+ * Les tweets ont été collectés avec le package [rtweet](https://rtweet.info/).
+ * Les pictogrammes des lignes viennent de la [plateforme Open data de la RATP](https://data.ratp.fr/explore/dataset/pictogrammes-des-lignes-de-metro-rer-tramway-bus-et-noctilien/images/).
+ * Les graphiques ont été réalisés avec le package [billboarder](https://github.com/dreamRs/billboarder).
 
 </br>
 

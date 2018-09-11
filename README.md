@@ -1,6 +1,6 @@
-# Traffic interrompu !
+# Trafic interrompu !
 
-Une petite analyse des tweets des comptes des lignes de transport (métro, RER, Transilien) d'Île-de-France annonçant des perturbations ou des interruptions du traffic.
+Une petite analyse des tweets des comptes des lignes de transport (métro, RER, Transilien) d'Île-de-France annonçant des perturbations ou des interruptions du trafic.
 
 Allez ici pour voir les graphiques -> https://dreamrs.github.io/tweets-transports/
 
