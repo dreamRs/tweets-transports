@@ -61,7 +61,7 @@ m_incidents
 
 
 # group by week
-m_incidents[, nweek := week(date)]
+m_incidents[, nweek := isoweek(date)]
 m_incidents <- m_incidents[, list(value = sum(value), date = min(date)), by = list(screen_name, variable, nweek)]
 m_incidents <- m_incidents[order(nchar(screen_name), screen_name, date, variable)]
 
@@ -128,7 +128,7 @@ r_incidents
 
 
 # Group by week
-r_incidents[, nweek := week(date)]
+r_incidents[, nweek := isoweek(date)]
 r_incidents <- r_incidents[, list(value = sum(value), date = min(date)), by = list(screen_name, variable, nweek)]
 r_incidents <- r_incidents[order(nchar(screen_name), screen_name, date, variable)]
 
@@ -178,7 +178,7 @@ t_incidents
 
 
 # Group by week
-t_incidents[, nweek := week(date)]
+t_incidents[, nweek := isoweek(date)]
 t_incidents <- t_incidents[, list(value = sum(value), date = min(date)), by = list(screen_name, variable, nweek)]
 t_incidents <- t_incidents[order(nchar(screen_name), screen_name, date, variable)]
 
