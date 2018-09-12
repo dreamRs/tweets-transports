@@ -386,7 +386,7 @@ make_total_chart <- function(data, titre) {
     stacked = TRUE, rotated = TRUE
   ) %>% 
   bb_data(
-    order = "desc",
+    order = "",
     groups = list(as.list(c("perturbe", "interrompu"))),
     names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
   ) %>% 
@@ -404,13 +404,13 @@ make_total_chart <- function(data, titre) {
 
 # Prep data
 # Metro
-m_incidents_tot <- m_incidents[, list(value = sum(value)), by = list(screen_name, variable)]
+m_incidents_tot <- m_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
 m_incidents_tot[, lib := str_remove(string = screen_name, pattern = "_RATP")]
 m_incidents_tot[, lib := str_replace(string = lib, pattern = "(\\d{1,2})", replacement = " \\1")]
-
+setorder(m_incidents_tot, lib, variable)
 
 # RER
-r_incidents_tot <- r_incidents[, list(value = sum(value)), by = list(screen_name, variable)]
+r_incidents_tot <- r_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
 libs <- c(
   "RER A" = "RER_A",
   "RER B" = "RERB", 
@@ -422,7 +422,7 @@ r_incidents_tot[, lib := names(libs)[chmatch(x = screen_name, table = libs)]]
 setorder(r_incidents_tot, lib, variable)
 
 # Transilien
-t_incidents_tot <- t_incidents[, list(value = sum(value)), by = list(screen_name, variable)]
+t_incidents_tot <- t_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
 libs <- c(
   "Ligne J" = "LIGNEJ_SNCF",
   "Ligne L" = "LIGNEL_sncf", 

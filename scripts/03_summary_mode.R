@@ -22,17 +22,17 @@ library("billboarder")
 
 # Metro
 m_incidents <- readRDS("docs/m_incidents.rds")
-m_incidents_tot <- m_incidents[, list(value = sum(value)), by = list(screen_name, variable)]
+m_incidents_tot <- m_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
 
 
 # RER
 r_incidents <- readRDS("docs/r_incidents.rds")
-r_incidents_tot <- r_incidents[, list(value = sum(value)), by = list(screen_name, variable)]
+r_incidents_tot <- r_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
 
 
 # Transilien
 t_incidents <- readRDS("docs/t_incidents.rds")
-t_incidents_tot <- t_incidents[, list(value = sum(value)), by = list(screen_name, variable)]
+t_incidents_tot <- t_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
 
 
 
@@ -117,7 +117,7 @@ billboarder(data = t_incidents_tot) %>%
     stacked = TRUE, rotated = TRUE
   ) %>% 
   bb_data(
-    order = "desc",
+    order = "",
     groups = list(as.list(c("perturbe", "interrompu"))),
     names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
   ) %>% 
