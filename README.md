@@ -4,6 +4,10 @@ Une petite analyse des tweets des comptes des lignes de transport (métro, RER, 
 
 Allez ici pour voir les graphiques -> https://dreamrs.github.io/tweets-transports/
 
+Aperçu:
+
+![screenshot](screenshot.png)
+
 
 ### A propos
 
