@@ -410,7 +410,7 @@ make_total_chart <- function(data, titre) {
 m_incidents_tot <- m_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
 m_incidents_tot[, lib := str_remove(string = screen_name, pattern = "_RATP")]
 m_incidents_tot[, lib := str_replace(string = lib, pattern = "(\\d{1,2})", replacement = " \\1")]
-setorder(m_incidents_tot, lib, variable)
+m_incidents_tot <- m_incidents_tot[order(nchar(lib), lib, variable)]
 
 # RER
 r_incidents_tot <- r_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]

@@ -41,6 +41,7 @@ t_incidents_tot <- t_incidents[, list(value = sum(value)), by = list(screen_name
 
 m_incidents_tot[, lib := str_remove(string = screen_name, pattern = "_RATP")]
 m_incidents_tot[, lib := str_replace(string = lib, pattern = "(\\d{1,2})", replacement = " \\1")]
+m_incidents_tot <- m_incidents_tot[order(nchar(lib), lib, variable)]
 
 billboarder(data = m_incidents_tot) %>% 
   bb_barchart(
@@ -48,7 +49,7 @@ billboarder(data = m_incidents_tot) %>%
     stacked = TRUE, rotated = TRUE
   ) %>% 
   bb_data(
-    order = "desc",
+    order = "",
     groups = list(as.list(c("perturbe", "interrompu"))),
     names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
   ) %>% 
