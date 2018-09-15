@@ -87,6 +87,9 @@ library("htmltools")
 library("shiny")
 
 
+# THEME
+set_theme("insight")
+
 # DATAS
 m_incidents <- readRDS("m_incidents.rds")
 # m_incidents <- m_incidents[year(date) >= 2018]
@@ -143,7 +146,7 @@ make_chart <- function(data, line, type = "metro", y_axis_lab = "") {
       "function(data, width, height, element) {return {top: -25, right: 100};}"
     )
   ) %>% 
-  bb_add_style(".bb-tooltip-container" = "right: 10px; ", ".bb-tooltip th" = "background-color: #337ab7;")
+  bb_add_style(".bb-tooltip-container" = "right: 10px; ", ".bb-tooltip th" = "background-color: #337ab7; color: #fff;")
 }
 
 # nombre incidents
@@ -361,7 +364,7 @@ fluidRow(
   column(
     width = 4,
     tags$img(src="www/Logo_Paris_Transilien_ligneN.svg", alt="line_n", width="25"),
-    tags$img(src="www/Logo_Paris_Transilien_ligneU.svg", alt="line_u", width="25", tags$b("*Lignes N et U")),
+    tags$img(src="www/Logo_Paris_Transilien_ligneU.svg", alt="line_u", width="25", tags$b("Lignes N et U")),
     make_chart(data = t_incidents, line = "lignesNetU_SNCF", type = "transilien")
   ),
   column(
@@ -398,7 +401,7 @@ make_total_chart <- function(data, titre) {
     title = titre,
     y = "Nombre de tweets"
   ) %>% 
-  bb_add_style(".bb-tooltip th" = "background-color: #337ab7;")
+  bb_add_style(".bb-tooltip th" = "background-color: #337ab7; color: #fff;")
 }
 
 
