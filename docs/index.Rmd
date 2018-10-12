@@ -7,7 +7,8 @@ output:
 ---
 
 
-<script>
+
+```{js d3Locale, echo=FALSE}
 d3.timeFormatDefaultLocale({
    "dateTime":[
       "%A, le %e %B %Y, %X"
@@ -69,7 +70,7 @@ d3.timeFormatDefaultLocale({
       "déc."
    ]
 });
-</script>
+```
 
 
 
@@ -133,6 +134,10 @@ make_chart <- function(data, line, type = "metro", y_axis_lab = "") {
     bb_y_grid(show = TRUE) %>% 
     bb_legend(show = FALSE) %>% 
     bb_colors_manual(interrompu = "#FA5858", perturbe = "#F7D358") %>% 
+    bb_zoom(
+      enabled = list(type = "drag"),
+      resetButton = list(text = "Dézoomer")
+    ) %>% 
     bb_tooltip(
       order = "",
       linked = list(name = "metro-tooltip"), 
@@ -184,6 +189,26 @@ A propos :
 </br>
 
 
+<div id = "legend" style = "width: 100%; text-align: center; cursor: pointer;">
+<span id="interrompu" class = "bb-legend-item" value="interrompu"><span class="dot-red" id="red"  value="interrompu"></span> <b value="interrompu">Interrompu</b></span>
+<span id="perturbe" class = "bb-legend-item" value="perturbe"><span class="dot-orange" id="orange" value="perturbe"></span> <b value="perturbe">Perturbé</b></span>
+</div>
+
+```{js}
+function switchClassRed() {
+  document.querySelector('#red').classList.toggle('dot-red');
+  document.querySelector('#red').classList.toggle('dot-empty-red');
+}
+document.querySelector('#interrompu').addEventListener('click', switchClassRed);
+
+function switchClassOrange() {
+  document.querySelector('#orange').classList.toggle('dot-orange');
+  document.querySelector('#orange').classList.toggle('dot-empty-orange');
+}
+document.querySelector('#perturbe').addEventListener('click', switchClassOrange);
+```
+
+
 ## Cliquez pour changer d'onglet : {.tabset .tabset-pills .tabset-justified .nav-justified}
 
 ### <img src="www/Metro-M.svg" class="blue" alt="metro" width="25"/><img src="www/Metro-M-white.svg" class="white" alt="metro" width="25"/> Métro
@@ -191,10 +216,6 @@ A propos :
 
 </br>
 
-<div style = "width: 100%; text-align: center;">
-<span class="dot-red"></span> Interrompu
-<span class="dot-orange"></span> Perturbé
-</div>
 
 
 ```{r grid-metro}
@@ -283,16 +304,10 @@ fluidRow(
 
 
 
-
-
 ### <img src="www/RER.svg" class="blue" alt="RER" width="25"/><img src="www/RER-white.svg" class="white" alt="metro" width="25"/> RER
 
 <br>
 
-<div style = "width: 100%; text-align: center;">
-<span class="dot-red"></span> Interrompu
-<span class="dot-orange"></span> Perturbé
-</div>
 
 ```{r grid-rer}
 fluidRow(
@@ -332,10 +347,6 @@ fluidRow(
 
 </br>
 
-<div style = "width: 100%; text-align: center;">
-<span class="dot-red"></span> Interrompu
-<span class="dot-orange"></span> Perturbé
-</div>
 
 ```{r grid-transilien}
 fluidRow(
@@ -396,7 +407,7 @@ make_total_chart <- function(data, titre) {
   bb_colors_manual(interrompu = "#FA5858", perturbe = "#F7D358") %>% 
   bb_y_grid(show = TRUE) %>% 
   bb_y_axis(max = 900) %>% 
-  bb_legend(usePoint = TRUE) %>% 
+  bb_legend(usePoint = TRUE, show = FALSE) %>% 
   bb_labs(
     title = titre,
     y = "Nombre de tweets"
@@ -452,7 +463,26 @@ fluidRow(
 
 
 
+```{js legend}
+d3.selectAll("#legend span")
+	.on("mouseover mouseout click", () => {
+		const id = d3.select(d3.event.target).attr("value");
+		const type = d3.event.type;
 
+		bb.instance.forEach(v => {
+			switch (type) {
+				case "mouseover":
+					v.focus(id);
+					break;
+				case "mouseout":
+					v.revert();
+					break;
+				case "click":
+					v.toggle(id);
+			}
+		});
+	});
+```
 
 
 

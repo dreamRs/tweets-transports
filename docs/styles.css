@@ -34,10 +34,23 @@ li.active>a>img.white {
   display: none;
 }
 
+.bb-legend-item {
+  margin: 10px;
+}
+
 .dot-red {
   height: 15px;
   width: 15px;
   background-color: #FA5858;
+  border: solid 2px #FA5858;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-empty-red {
+  height: 15px;
+  width: 15px;
+  background-color: #FFF;
+  border: solid 2px #FA5858;
   border-radius: 50%;
   display: inline-block;
 }
@@ -46,6 +59,15 @@ li.active>a>img.white {
   height: 15px;
   width: 15px;
   background-color: #F7D358;
+  border: solid 2px #F7D358;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-empty-orange {
+  height: 15px;
+  width: 15px;
+  background-color: #FFF;
+  border: solid 2px #F7D358;
   border-radius: 50%;
   display: inline-block;
 }
