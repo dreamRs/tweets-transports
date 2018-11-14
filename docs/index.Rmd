@@ -220,9 +220,9 @@ document.querySelector('#perturbe').addEventListener('click', switchClassOrange)
 ```{r controls-metro}
 rmd_group_buttons(
   shuffleId = "shuffle-metro",
-  sort_button("Numéro de ligne", "ligneNum", TRUE),
-  sort_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
-  sort_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, decreasing = TRUE)
+  arrange_button("Numéro de ligne", "ligneNum", TRUE),
+  arrange_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
+  arrange_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, desc = TRUE)
 )
 ```
 
@@ -255,9 +255,9 @@ shuffle_container(
 ```{r controls-rer}
 rmd_group_buttons(
   shuffleId = "shuffle-rer",
-  sort_button("Numéro de ligne", "ligneNum"),
-  sort_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
-  sort_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, decreasing = TRUE)
+  arrange_button("Numéro de ligne", "ligneNum"),
+  arrange_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
+  arrange_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, desc = TRUE)
 )
 ```
 
@@ -303,9 +303,9 @@ md_shuffle_update("shuffle-rer", "#cliquez-pour-changer-donglet li:nth-child(2) 
 ```{r controls-transilien}
 rmd_group_buttons(
   shuffleId = "shuffle-transilien",
-  sort_button("Numéro de ligne", "ligneNum"),
-  sort_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
-  sort_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, decreasing = TRUE)
+  arrange_button("Numéro de ligne", "ligneNum"),
+  arrange_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
+  arrange_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, desc = TRUE)
 )
 ```
 
