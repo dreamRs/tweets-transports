@@ -87,6 +87,7 @@ library("billboarder")
 library("htmltools")
 library("shiny")
 library("shufflecards")
+library("crosstalk")
 
 
 # THEME
@@ -105,6 +106,13 @@ t_incidents <- readRDS("t_incidents.rds")
 # m_incidents <- m_incidents[year(date) >= 2018]
 
 
+# crosstalk instance
+transport_shared <- rbindlist(list(
+  m_incidents[, list(key = unique(screen_name), type = "Métro")],
+  r_incidents[, list(key = unique(screen_name), type = "RER")],
+  t_incidents[, list(key = unique(screen_name), type = "Transilien")]
+))
+transport_shared <- SharedData$new(transport_shared, key = transport_shared$key)
 
 # FUNS
 make_chart <- function(data, line, type = "metro", y_axis_lab = "") {
@@ -210,227 +218,103 @@ document.querySelector('#perturbe').addEventListener('click', switchClassOrange)
 ```
 
 
-## Cliquez pour changer d'onglet : {.tabset .tabset-pills .tabset-justified .nav-justified}
-
-### <img src="www/Metro-M.svg" class="blue" alt="metro" width="25"/><img src="www/Metro-M-white.svg" class="white" alt="metro" width="25"/> Métro
-
 
 </br>
 
-```{r controls-metro}
-rmd_group_buttons(
-  shuffleId = "shuffle-metro",
-  arrange_button("Numéro de ligne", "ligneNum", TRUE),
-  arrange_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
-  arrange_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, desc = TRUE)
-)
-```
-
-```{r grid-metro}
-shuffle_container(
-  shuffleId = "shuffle-metro",
-  card_list = lapply(
-    X = seq_len(14),
-    FUN = function(i) {
-      total <- m_incidents[screen_name == sprintf("Ligne%d_RATP", i), sum(value)]
-      shuffle_card(
-        width = "400px",
-        ligneNum = i, 
-        totalIncidents = total,
-        tags$img(src=sprintf("www/Paris_m_%d_jms.svg", i), width="25", tags$b("Ligne", i)),
-        make_chart(data = m_incidents, line = i)
-      )
-    }
-  )
+```{r controls-charts}
+bscols(widths = c(8, 4),
+  rmd_group_buttons(
+    shuffleId = "grid-charts",
+    arrange_button("Numéro de ligne", by = "ligneNum"),
+    arrange_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc")),
+    arrange_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), desc = TRUE)
+  ),
+  filter_checkbox("type_filter", "Moyen de transport :", transport_shared, ~type, inline = TRUE)
 )
 ```
 
 
 
-
-### <img src="www/RER.svg" class="blue" alt="RER" width="25"/><img src="www/RER-white.svg" class="white" alt="metro" width="25"/> RER
-
-<br>
-
-```{r controls-rer}
-rmd_group_buttons(
-  shuffleId = "shuffle-rer",
-  arrange_button("Numéro de ligne", "ligneNum"),
-  arrange_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
-  arrange_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, desc = TRUE)
-)
-```
-
-```{r grid-rer}
-shuffle_container(
-  shuffleId = "shuffle-rer", 
-  width = "100%",
-  card_list = lapply(
-    X = LETTERS[1:5],
-    FUN = function(i) {
-      twitter_handle <- switch(
-        i, "A" = "RER_A", 
-        "B" = "RERB", 
-        "C" = "RERC_SNCF", 
-        "D" = "RERD_SNCF", 
-        "E" = "RERE_SNCF"
-      )
-      total <- r_incidents[screen_name == twitter_handle, sum(value)]
-      shuffle_card(
-        width = "400px",
-        ligneNum = i, 
-        totalIncidents = total,
-        tags$img(src=sprintf("www/Paris_RER_%s_icon.svg", i), width="25", tags$b("RER", i)),
-        make_chart(data = r_incidents, line = twitter_handle, type = "rer")
-      )
-    }
-  )
-)
-```
-
-
-
-```{r}
-md_shuffle_update("shuffle-rer", "#cliquez-pour-changer-donglet li:nth-child(2) a")
-```
-
-
-
-### <img src="www/Logo_train_transilien.svg" class="blue" alt="Transilien" width="25"/><img src="www/Logo_train_transilien-white.svg" class="white" alt="Transilien" width="25"/> Transilien
-
-</br>
-
-```{r controls-transilien}
-rmd_group_buttons(
-  shuffleId = "shuffle-transilien",
-  arrange_button("Numéro de ligne", "ligneNum"),
-  arrange_button("Total incidents (croissant)", "totalIncidents", icon = icon("sort-numeric-asc"), numeric = TRUE),
-  arrange_button(label = "Total incidents (décroissant)", "totalIncidents", icon = icon("sort-numeric-desc"), numeric = TRUE, desc = TRUE)
-)
-```
-
-```{r grid-transilien}
-shuffle_container(
-  shuffleId = "shuffle-transilien", 
-  card_list = lapply(
-    X = c("J", "L", "P", "H", "N", "R"),
-    FUN = function(i) {
-      twitter_handle <- switch(
-        i, "J" = "LIGNEJ_SNCF", 
-        "L" = "LIGNEL_sncf", 
-        "P" = "LIGNEP_SNCF", 
-        "H" = "LigneH_SNCF", 
-        "N" = "lignesNetU_SNCF", 
-        "R" = "LIGNER_SNCF"
-      )
-      total <- t_incidents[screen_name == twitter_handle, sum(value)]
-      if (i != "N") {
-        src <- sprintf("www/Logo_Paris_Transilien_ligne%s.svg", i)
-        tag_img <- tags$div(
-          style = "height: 25px;",
-          tags$img(src = src, width="25", height="25", tags$b("Ligne", i))
-        )
-      } else {
-        tag_img <- tags$div(
-          style = "height: 25px;",
-          tags$img(src="www/Logo_Paris_Transilien_ligneN.svg", alt="line_n", width="25", height="25"),
-          tags$img(src="www/Logo_Paris_Transilien_ligneU.svg", alt="line_u", width="25", height="25", tags$b("Lignes N et U"))
+```{r grid-charts}
+shuffle_widget(
+  shuffleId = "grid-charts",
+  options = shuffle_options(is_centered = TRUE),
+  shared_data = transport_shared,
+  card_list = c(
+    lapply(
+      X = seq_len(14),
+      FUN = function(i) {
+        total <- m_incidents[screen_name == sprintf("Ligne%d_RATP", i), sum(value)]
+        shuffle_card(
+          width = "400px",
+          key = sprintf("Ligne%d_RATP", i),
+          ligneNum = i, 
+          totalIncidents = total,
+          tags$img(src=sprintf("www/Paris_m_%d_jms.svg", i), width="25", tags$b("Ligne", i)),
+          make_chart(data = m_incidents, line = i)
         )
       }
-      shuffle_card(
-        width = "400px",
-        ligneNum = i, 
-        totalIncidents = total,
-        tag_img,
-        make_chart(data = t_incidents, line = twitter_handle, type = "transilien")
-      )
-    }
+    ),
+    lapply(
+      X = LETTERS[1:5],
+      FUN = function(i) {
+        twitter_handle <- switch(
+          i, "A" = "RER_A", 
+          "B" = "RERB", 
+          "C" = "RERC_SNCF", 
+          "D" = "RERD_SNCF", 
+          "E" = "RERE_SNCF"
+        )
+        total <- r_incidents[screen_name == twitter_handle, sum(value)]
+        shuffle_card(
+          width = "400px",
+          key = twitter_handle,
+          ligneNum = i, 
+          totalIncidents = total,
+          tags$img(src=sprintf("www/Paris_RER_%s_icon.svg", i), width="25", tags$b("RER", i)),
+          make_chart(data = r_incidents, line = twitter_handle, type = "rer")
+        )
+      }
+    ),
+    lapply(
+      X = c("J", "L", "P", "H", "N", "R"),
+      FUN = function(i) {
+        twitter_handle <- switch(
+          i, "J" = "LIGNEJ_SNCF", 
+          "L" = "LIGNEL_sncf", 
+          "P" = "LIGNEP_SNCF", 
+          "H" = "LigneH_SNCF", 
+          "N" = "lignesNetU_SNCF", 
+          "R" = "LIGNER_SNCF"
+        )
+        total <- t_incidents[screen_name == twitter_handle, sum(value)]
+        if (i != "N") {
+          src <- sprintf("www/Logo_Paris_Transilien_ligne%s.svg", i)
+          tag_img <- tags$div(
+            style = "height: 25px;",
+            tags$img(src = src, width="25", height="25", tags$b("Ligne", i))
+          )
+        } else {
+          tag_img <- tags$div(
+            style = "height: 25px;",
+            tags$img(src="www/Logo_Paris_Transilien_ligneN.svg", alt="line_n", width="25", height="25"),
+            tags$img(src="www/Logo_Paris_Transilien_ligneU.svg", alt="line_u", width="25", height="25", tags$b("Lignes N et U"))
+          )
+        }
+        shuffle_card(
+          width = "400px",
+          key = twitter_handle,
+          ligneNum = i, 
+          totalIncidents = total,
+          tag_img,
+          make_chart(data = t_incidents, line = twitter_handle, type = "transilien")
+        )
+      }
+    )
   )
 )
 ```
 
-
-```{r}
-md_shuffle_update("shuffle-transilien", "#cliquez-pour-changer-donglet li:nth-child(3) a")
-```
-
-
-
-
-
-
-### Total
-
-```{r total}
-
-# chart helper
-make_total_chart <- function(data, titre) {
-  billboarder(data = data) %>% 
-  bb_barchart(
-    mapping = bbaes(x = lib, y = value, group = variable),
-    stacked = TRUE, rotated = TRUE
-  ) %>% 
-  bb_data(
-    order = "",
-    groups = list(as.list(c("perturbe", "interrompu"))),
-    names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
-  ) %>% 
-  bb_colors_manual(interrompu = "#FA5858", perturbe = "#F7D358") %>% 
-  bb_y_grid(show = TRUE) %>% 
-  bb_y_axis(max = 900) %>% 
-  bb_legend(usePoint = TRUE, show = FALSE) %>% 
-  bb_labs(
-    title = titre,
-    y = "Nombre de tweets"
-  ) %>% 
-  bb_add_style(".bb-tooltip th" = "background-color: #337ab7; color: #fff;")
-}
-
-
-# Prep data
-# Metro
-m_incidents_tot <- m_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
-m_incidents_tot[, lib := str_remove(string = screen_name, pattern = "_RATP")]
-m_incidents_tot[, lib := str_replace(string = lib, pattern = "(\\d{1,2})", replacement = " \\1")]
-m_incidents_tot <- m_incidents_tot[order(nchar(lib), lib, variable)]
-
-# RER
-r_incidents_tot <- r_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
-libs <- c(
-  "RER A" = "RER_A",
-  "RER B" = "RERB", 
-  "RER C" = "RERC_SNCF",
-  "RER D" = "RERD_SNCF", 
-  "RER E" = "RERE_SNCF"
-)
-r_incidents_tot[, lib := names(libs)[chmatch(x = screen_name, table = libs)]]
-setorder(r_incidents_tot, lib, variable)
-
-# Transilien
-t_incidents_tot <- t_incidents[, list(value = sum(value)), by = list(screen_name, variable = as.character(variable))]
-libs <- c(
-  "Ligne J" = "LIGNEJ_SNCF",
-  "Ligne L" = "LIGNEL_sncf", 
-  "Ligne P" = "LIGNEP_SNCF",
-  "Ligne R" = "LIGNER_SNCF", 
-  "Ligne H" = "LigneH_SNCF", 
-  "Lignes N\net U" = "lignesNetU_SNCF"
-)
-t_incidents_tot[, lib := names(libs)[chmatch(x = screen_name, table = libs)]]
-setorder(t_incidents_tot, lib, variable)
-
-
-
-fluidRow(
-  column(
-    width = 8, offset = 2,
-    make_total_chart(m_incidents_tot, "Total lignes de métro"),
-    make_total_chart(r_incidents_tot, "Total lignes de RER"),
-    make_total_chart(t_incidents_tot, "Total lignes de Transilien")
-  )
-)
-
-```
 
 
 
