@@ -8,6 +8,8 @@ output:
 
 
 
+
+
 ```{js d3Locale, echo=FALSE}
 d3.timeFormatDefaultLocale({
    "dateTime":[
@@ -126,7 +128,7 @@ make_chart <- function(data, line, type = "metro", y_axis_lab = "") {
   data <- copy(data)
   data <- data[screen_name == line_id, list(x = date, variable = variable, value = value)]
   data <- dcast(data = data, formula = x ~ variable, value.var = "value")
-  billboarder(height = "250px") %>% 
+  bb <- billboarder(height = "250px") %>% 
     # bb_aes(x = x, y = value, group = variable) %>% 
     bb_linechart(data = data[, list(x, interrompu, perturbe)], type = "area-step") %>% 
     bb_data(
@@ -161,6 +163,9 @@ make_chart <- function(data, line, type = "metro", y_axis_lab = "") {
     )
   ) %>% 
   bb_add_style(".bb-tooltip-container" = "right: 10px; ", ".bb-tooltip th" = "background-color: #337ab7; color: #fff;")
+  
+  bb$dependencies <- c(bb$dependencies, list(d3r::d3_dep_v5()))
+  bb
 }
 
 # nombre incidents
@@ -250,7 +255,11 @@ shuffle_widget(
           key = sprintf("Ligne%d_RATP", i),
           ligneNum = i, 
           totalIncidents = total,
-          tags$img(src=sprintf("www/Paris_m_%d_jms.svg", i), width="25", tags$b("Ligne", i)),
+          tags$div(
+            style = "margin-left: 35px;",
+            tags$img(src = sprintf("www/Paris_m_%d_jms.svg", i), width = "25"), 
+            tags$b("Ligne", i)
+          ),
           make_chart(data = m_incidents, line = i)
         )
       }
@@ -271,7 +280,7 @@ shuffle_widget(
           key = twitter_handle,
           ligneNum = i, 
           totalIncidents = total,
-          tags$img(src=sprintf("www/Paris_RER_%s_icon.svg", i), width="25", tags$b("RER", i)),
+          tags$img(src = sprintf("www/Paris_RER_%s_icon.svg", i), width = "25", tags$b("RER", i)),
           make_chart(data = r_incidents, line = twitter_handle, type = "rer")
         )
       }
