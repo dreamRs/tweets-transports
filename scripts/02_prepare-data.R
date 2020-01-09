@@ -30,7 +30,8 @@ metro_tweets <- readRDS(file = "datas/m_tweets.rds")
 # Count number of tweets with mention "perturbé" and "interrompu"
 m_incidents <- metro_tweets[, list(
   perturbe = sum(str_count(text, "perturbé")),
-  interrompu = sum(str_count(text, "interrompu"))
+  interrompu = sum(str_count(text, "interrompu")),
+  mouvement_social = sum(str_count(str_to_lower(text), "mouvement social"))
 ), by = list(screen_name, date = as_date(created_at))]
 m_incidents
 
@@ -51,7 +52,7 @@ m_incidents <- m_incidents[missing_days, on = c("screen_name", "date")]
 m_incidents <- melt(
   data = m_incidents, 
   id.vars = c("screen_name", "date"), 
-  measure.vars = c("perturbe", "interrompu")
+  measure.vars = c("perturbe", "interrompu", "mouvement_social")
 )
 m_incidents[is.na(value), value := 0]
 m_incidents <- m_incidents[order(nchar(screen_name), screen_name, date)]
@@ -73,12 +74,12 @@ saveRDS(m_incidents, file = "docs/m_incidents.rds")
 
 
 # Viz test
-billboarder(data = m_incidents[screen_name == "Ligne1_RATP", list(x = date, variable = variable, value = value)]) %>% 
+billboarder(data = m_incidents[screen_name == "Ligne6_RATP", list(x = date, variable = variable, value = value)]) %>% 
   bb_aes(x = x, y = value, group = variable) %>% 
   bb_linechart(type = "area-step") %>% 
   bb_data(
-    groups = list(c("perturbe", "interrompu")),
-    names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
+    groups = list(c("perturbe", "interrompu", "mouvement_social")),
+    names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu", "mouvement_social" = "Mouvement social")
   ) %>% 
   bb_x_axis(tick = list(fit = FALSE, format = "%d %b")) %>% 
   bb_y_grid(show = TRUE) %>% 
@@ -136,6 +137,19 @@ r_incidents <- r_incidents[order(nchar(screen_name), screen_name, date, variable
 # save
 saveRDS(r_incidents, file = "docs/r_incidents.rds")
 
+
+
+# Viz test
+billboarder(data = r_incidents[screen_name == "RERB", list(x = date, variable = variable, value = value)]) %>% 
+  bb_aes(x = x, y = value, group = variable) %>% 
+  bb_linechart(type = "area-step") %>% 
+  bb_data(
+    groups = list(c("perturbe", "interrompu")),
+    names = list("perturbe" = "Perturbé", "interrompu" = "Interrompu")
+  ) %>% 
+  bb_x_axis(tick = list(fit = FALSE, format = "%d %b")) %>% 
+  bb_y_grid(show = TRUE) %>% 
+  bb_colors_manual()
 
 
 

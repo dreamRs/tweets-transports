@@ -42,6 +42,9 @@ metro_tweets[, list(perturbe = sum(grepl("perturbé", text))), by = screen_name]
 # interrompu
 metro_tweets[, list(interrompu = sum(grepl("interrompu", text))), by = screen_name]
 
+# Mouvement social
+metro_tweets[, list(perturbe = sum(grepl("Mouvement social", text))), by = screen_name]
+
 metro_tweets[, list(
   interrompu = any(grepl("interrompu", text))
 ), by = list(screen_name, date = as.Date(created_at))][, list(
@@ -92,7 +95,7 @@ tweets_rer[, list(
 # Grève
 tweets_rer[, list(interrompu = sum(grepl("grève", text))), by = screen_name]
 
-
+tweets_rer[, list(interrompu = sum(grepl("Mouvement social", text))), by = screen_name]
 
 
 
